@@ -1,0 +1,41 @@
+name: NASDAQ Catalyst Monitor
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"     # every 5 minutes (GitHub may add a few min of delay)
+  workflow_dispatch:           # lets you trigger a run manually from the Actions tab
+
+permissions:
+  contents: write              # needed to commit seen_news.json back
+
+concurrency:
+  group: monitor
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run one scan
+        env:
+          RUN_ONCE: "1"
+          FINNHUB_API_KEY: ${{ secrets.d989ophr01qh9oheu3lgd989ophr01qh9oheu3m0 }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.52504489 }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.99647562 }}
+          ALERT_THRESHOLD: "40"
+        run: python monitor.py
+
+      - name: Save dedupe state
+        run: |
+          git config user.name "monitor-bot"
+          git config user.email "actions@github.com"
+          git add -A seen_news.json nasdaq_tickers.json || true
+          git diff --cached --quiet || git commit -m "state: $(date -u +'%Y-%m-%d %H:%M')"
+          git push || true
