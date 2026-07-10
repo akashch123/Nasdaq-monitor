@@ -27,8 +27,7 @@ jobs:
           RUN_ONCE: "1"
           FINNHUB_API_KEY: ${{ secrets.d989ophr01qh9oheu3lgd989ophr01qh9oheu3m0 }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.52504489 }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          ANTHROPIC_API_KEY: ${{ secrets.99647562 }}
+          TELEGRAM_CHAT_ID: ${{ secrets.99647562 }}
           ALERT_THRESHOLD: "40"
         run: python monitor.py
 
